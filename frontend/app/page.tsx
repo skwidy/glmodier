@@ -1,29 +1,55 @@
 import { Suspense } from "react";
 
 import { AllPosts } from "@/app/components/Posts";
-import { settingsQuery } from "@/sanity/lib/queries";
+import Link from "next/link";
 import { sanityFetch } from "@/sanity/lib/live";
+import { allPoemsQuery } from "@/sanity/lib/queries";
+import { AllPoemsQueryResult } from "@/sanity.types";
+import CoverImage from "@/app/components/CoverImage";
 
 export default async function Page() {
-  const { data: settings } = await sanityFetch({
-    query: settingsQuery,
+  const { data: poems } = await sanityFetch({
+    query: allPoemsQuery,
   });
 
   return (
     <>
-      <div className="relative">
-        <div className="relative bg-[url(/images/tile-1-black.png)] bg-size-[5px]">
-          <div className="bg-gradient-to-b from-white w-full h-full absolute top-0"></div>
-          <div className="container">
-            <div className="relative min-h-[40vh] mx-auto max-w-2xl pt-10 xl:pt-20 pb-30 space-y-6 lg:max-w-4xl lg:px-12 flex flex-col items-center justify-center">
-              <div className="flex flex-col gap-4 items-center">
-                <div className="text-md leading-6 prose uppercase py-1 px-3 bg-white font-mono italic">
-                  Welcome to
-                </div>
-                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-black">
-                  {settings?.title || "Your Website"}
-                </h1>
-              </div>
+      <div className="container my-24">
+        <div className="grid gap-12">
+          <div>
+            <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+              <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+                Poésie
+              </h2>
+              <Link
+                href="/poems"
+                className="text-sm font-semibold text-blue-600 hover:text-blue-500"
+              >
+                View all
+              </Link>
+            </div>
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-8">
+              {poems?.slice(0, 3).map((poem: AllPoemsQueryResult[0]) => (
+                <article key={poem._id} className="group">
+                  <Link href={`/poems/${poem.slug}`} className="block">
+                    <div className="aspect-[16/9] overflow-hidden rounded-lg bg-gray-100">
+                      {poem.coverImage && (
+                        <div className="transition-transform duration-300 group-hover:scale-105">
+                          <CoverImage
+                            image={poem.coverImage}
+                            priority={false}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="mt-4">
+                      <h2 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {poem.title}
+                      </h2>
+                    </div>
+                  </Link>
+                </article>
+              ))}
             </div>
           </div>
         </div>

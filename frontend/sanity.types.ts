@@ -75,6 +75,20 @@ export type InfoSection = {
     level?: number;
     _type: "block";
     _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    caption?: string;
+    _type: "image";
+    _key: string;
   }>;
 };
 
@@ -109,7 +123,56 @@ export type BlockContent = Array<{
   level?: number;
   _type: "block";
   _key: string;
+} | {
+  asset?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+  };
+  media?: unknown;
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  alt: string;
+  caption?: string;
+  _type: "image";
+  _key: string;
 }>;
+
+export type SimplePage = {
+  _id: string;
+  _type: "simplePage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: Slug;
+  content?: BlockContent;
+};
+
+export type Poem = {
+  _id: string;
+  _type: "poem";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: Slug;
+  content?: BlockContent;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
+  };
+};
 
 export type Settings = {
   _id: string;
@@ -477,7 +540,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = CallToAction | Link | InfoSection | BlockContent | Settings | Page | Post | Person | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = CallToAction | Link | InfoSection | BlockContent | SimplePage | Poem | Settings | Page | Post | Person | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -585,6 +648,21 @@ export type GetPageQueryResult = {
       level?: number;
       _type: "block";
       _key: string;
+    } | {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt: string;
+      caption?: string;
+      _type: "image";
+      _key: string;
+      markDefs: null;
     }> | null;
   }> | null;
 } | null;
@@ -703,6 +781,21 @@ export type PostQueryResult = {
     level?: number;
     _type: "block";
     _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    caption?: string;
+    _type: "image";
+    _key: string;
+    markDefs: null;
   }> | null;
   _id: string;
   status: "draft" | "published";
@@ -741,14 +834,112 @@ export type PostQueryResult = {
     };
   } | null;
 } | null;
+// Variable: allPoemsQuery
+// Query: *[_type == "poem" && defined(slug.current)] | order(_createdAt desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  coverImage,  "date": coalesce(date, _updatedAt),  }
+export type AllPoemsQueryResult = Array<{
+  _id: string;
+  status: "draft" | "published";
+  title: string;
+  slug: string;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
+  };
+  date: string;
+}>;
+// Variable: poemQuery
+// Query: *[_type == "poem" && slug.current == $slug] [0] {    content[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  coverImage,  "date": coalesce(date, _updatedAt),  }
+export type PoemQueryResult = {
+  content: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs: Array<{
+      linkType?: "href" | "page" | "post";
+      href?: string;
+      page: string | null;
+      post: string | null;
+      openInNewTab?: boolean;
+      _type: "link";
+      _key: string;
+    }> | null;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    caption?: string;
+    _type: "image";
+    _key: string;
+    markDefs: null;
+  }> | null;
+  _id: string;
+  status: "draft" | "published";
+  title: string;
+  slug: string;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt: string;
+    _type: "image";
+  };
+  date: string;
+} | null;
 // Variable: postPagesSlugs
 // Query: *[_type == "post" && defined(slug.current)]  {"slug": slug.current}
 export type PostPagesSlugsResult = Array<{
   slug: string;
 }>;
+// Variable: poemPagesSlugs
+// Query: *[_type == "poem" && defined(slug.current)]  {"slug": slug.current}
+export type PoemPagesSlugsResult = Array<{
+  slug: string;
+}>;
 // Variable: pagesSlugs
 // Query: *[_type == "page" && defined(slug.current)]  {"slug": slug.current}
 export type PagesSlugsResult = Array<{
+  slug: string;
+}>;
+// Variable: simplePageQuery
+// Query: *[_type == "simplePage" && slug.current == $slug][0]{    _id,    title,    content  }
+export type SimplePageQueryResult = {
+  _id: string;
+  title: string;
+  content: BlockContent | null;
+} | null;
+// Variable: simplePageSlugs
+// Query: *[_type == "simplePage" && defined(slug.current)]  {"slug": slug.current}
+export type SimplePageSlugsResult = Array<{
   slug: string;
 }>;
 
@@ -762,7 +953,12 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": AllPostsQueryResult;
     "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": MorePostsQueryResult;
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": PostQueryResult;
+    "\n  *[_type == \"poem\" && defined(slug.current)] | order(_createdAt desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n\n  }\n": AllPoemsQueryResult;
+    "\n  *[_type == \"poem\" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n\n  }\n": PoemQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PostPagesSlugsResult;
+    "\n  *[_type == \"poem\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PoemPagesSlugsResult;
     "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
+    "\n  *[_type == \"simplePage\" && slug.current == $slug][0]{\n    _id,\n    title,\n    content\n  }\n": SimplePageQueryResult;
+    "\n  *[_type == \"simplePage\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": SimplePageSlugsResult;
   }
 }

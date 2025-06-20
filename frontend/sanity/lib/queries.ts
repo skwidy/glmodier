@@ -13,6 +13,15 @@ const postFields = /* groq */ `
   "author": author->{firstName, lastName, picture},
 `;
 
+const poemFields = /* groq */ `
+  _id,
+  "status": select(_originalId in path("drafts.**") => "draft", "published"),
+  "title": coalesce(title, "Untitled"),
+  "slug": slug.current,
+  coverImage,
+  "date": coalesce(date, _updatedAt),
+`;
+
 const linkReference = /* groq */ `
   _type == "link" => {
     "page": page->slug.current,
@@ -86,12 +95,49 @@ export const postQuery = defineQuery(`
   }
 `);
 
+export const allPoemsQuery = defineQuery(`
+  *[_type == "poem" && defined(slug.current)] | order(_createdAt desc) {
+    ${poemFields}
+  }
+`);
+
+export const poemQuery = defineQuery(`
+  *[_type == "poem" && slug.current == $slug] [0] {
+    content[]{
+    ...,
+    markDefs[]{
+      ...,
+      ${linkReference}
+    }
+  },
+    ${poemFields}
+  }
+`);
+
 export const postPagesSlugs = defineQuery(`
   *[_type == "post" && defined(slug.current)]
   {"slug": slug.current}
 `);
 
+export const poemPagesSlugs = defineQuery(`
+  *[_type == "poem" && defined(slug.current)]
+  {"slug": slug.current}
+`);
+
 export const pagesSlugs = defineQuery(`
   *[_type == "page" && defined(slug.current)]
+  {"slug": slug.current}
+`);
+
+export const simplePageQuery = defineQuery(`
+  *[_type == "simplePage" && slug.current == $slug][0]{
+    _id,
+    title,
+    content
+  }
+`);
+
+export const simplePageSlugs = defineQuery(`
+  *[_type == "simplePage" && defined(slug.current)]
   {"slug": slug.current}
 `);

@@ -96,6 +96,7 @@ export default {
       },
       fontFamily: {
         sans: ["var(--font-inter)"],
+        serif: ["var(--font-eb-garamond)"],
       },
     },
   },

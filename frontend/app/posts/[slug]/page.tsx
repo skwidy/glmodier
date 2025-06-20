@@ -7,6 +7,9 @@ import Avatar from "@/app/components/Avatar";
 import CoverImage from "@/app/components/CoverImage";
 import { MorePosts } from "@/app/components/Posts";
 import PortableText from "@/app/components/PortableText";
+import TableOfContents, {
+  type Heading,
+} from "@/app/components/TableOfContents";
 import { sanityFetch } from "@/sanity/lib/live";
 import { postPagesSlugs, postQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
@@ -70,16 +73,22 @@ export default async function PostPage(props: Props) {
     return notFound();
   }
 
+  const headings = post.content
+    ? (post.content.filter(
+        (block) => /h\d/.test(block.style || ""),
+      ) as Heading[])
+    : [];
+
   return (
     <>
-      <div className="">
-        <div className="container my-12 lg:my-24 grid gap-12">
-          <div>
+      <div className="container my-12 lg:my-24">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+          <div className="lg:col-span-3">
             <div className="pb-6 grid gap-6 mb-6 border-b border-gray-100">
               <div className="max-w-3xl flex flex-col gap-6">
-                <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
+                <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
                   {post.title}
-                </h2>
+                </h1>
               </div>
               <div className="max-w-3xl flex gap-4 items-center">
                 {post.author &&
@@ -103,6 +112,11 @@ export default async function PostPage(props: Props) {
               )}
             </article>
           </div>
+          <aside className="hidden lg:block">
+            <div className="sticky top-24">
+              <TableOfContents headings={headings} />
+            </div>
+          </aside>
         </div>
       </div>
       <div className="border-t border-gray-100 bg-gray-50">

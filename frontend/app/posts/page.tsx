@@ -8,8 +8,8 @@ import CoverImage from "@/app/components/CoverImage";
 import Date from "@/app/components/Date";
 
 export const metadata: Metadata = {
-  title: "Blog Posts",
-  description: "All blog posts",
+  title: "Carnets de Voyage",
+  description: "Nomadic Notebook: a series of fragments, thoughts, and observations collected along the way.",
 };
 
 export default async function PostsPage() {
@@ -23,10 +23,10 @@ export default async function PostsPage() {
         <div className="pb-6 border-b border-gray-100">
           <div className="max-w-3xl">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-7xl">
-              Blog Posts
+              Carnets de Voyage
             </h1>
             <p className="mt-4 text-base lg:text-lg leading-relaxed text-gray-600 uppercase font-light">
-              Latest articles and updates
+              Nomadic Notebook: a series of fragments, thoughts, and observations collected along the way.
             </p>
           </div>
         </div>

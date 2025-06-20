@@ -89,7 +89,7 @@ export const MorePosts = async ({
   }
 
   return (
-    <Posts heading={`Recent Posts (${data?.length})`}>
+    <Posts heading={`Recent Chapters`}>
       {data?.map((post: any) => <Post key={post._id} post={post} />)}
     </Posts>
   );
@@ -104,8 +104,12 @@ export const AllPosts = async () => {
 
   return (
     <Posts
-      heading="Recent Posts"
-      subHeading={`${data.length === 1 ? "This blog post is" : `These ${data.length} blog posts are`} populated from your Sanity Studio.`}
+      heading="Carnets de Voyage"
+      subHeading="This is not quite a blog, not quite a travel guide.
+      Just a series of fragments, thoughts, and observations collected along the way.
+      From one place to another, between flights, ideas, and silences.
+      Call it a nomadic notebook, an unfinished essay, or simply a space to breathe.
+      Let’s see where it leads."
     >
       {data.map((post: any) => (
         <Post key={post._id} post={post} />

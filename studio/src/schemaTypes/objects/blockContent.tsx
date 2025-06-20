@@ -92,5 +92,28 @@ export const blockContent = defineType({
         ],
       },
     }),
+    defineArrayMember({
+      type: 'image',
+      options: {
+        hotspot: true,
+        aiAssist: {
+          imageDescriptionField: 'alt',
+        },
+      },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative text',
+          description: 'Important for SEO and accessibility.',
+          validation: (rule) => rule.required(),
+        },
+        {
+          name: 'caption',
+          type: 'string',
+          title: 'Caption',
+        },
+      ],
+    }),
   ],
 })

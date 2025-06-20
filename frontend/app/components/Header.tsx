@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { settingsQuery } from "@/sanity/lib/queries";
 import { sanityFetch } from "@/sanity/lib/live";
+import Image from "next/image";
 
 export default async function Header() {
   const { data: settings } = await sanityFetch({
@@ -12,6 +13,13 @@ export default async function Header() {
       <div className="container py-6 px-2 sm:px-6">
         <div className="flex items-center justify-between gap-5">
           <Link className="flex items-center gap-2" href="/">
+            <Image
+              src="/images/profile.png"
+              alt="Guillaume Odier"
+              width={48}
+              height={48}
+              className="rounded-full h-12 w-12"
+            />
             <span className="text-lg sm:text-2xl pl-2 font-semibold">
               {settings?.title || "Guillaume Odier"}
             </span>
@@ -23,13 +31,18 @@ export default async function Header() {
               className="flex items-center gap-4 md:gap-6 leading-5 text-xs sm:text-base tracking-tight font-mono"
             >
               <li>
-                <Link href="/about" className="hover:underline">
-                  About
+                <Link href="/advisory" className="hover:underline">
+                  Advisory
                 </Link>
               </li>
               <li>
                 <Link href="/posts" className="hover:underline">
-                  Blog
+                  Carnets de Voyage
+                </Link>
+              </li>
+              <li>
+                <Link href="/poems" className="hover:underline">
+                  Poésie
                 </Link>
               </li>
               <li className="sm:before:w-[1px] sm:before:bg-gray-200 before:block flex sm:gap-4 md:gap-6">
