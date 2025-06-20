@@ -5,43 +5,13 @@ import Link from 'next/link'
 import PhotoGrid from '@/app/components/PhotoGrid'
 import { sanityFetch } from '@/sanity/lib/live'
 import { photoCategoryQuery, photosByCategoryQuery } from '@/sanity/lib/queries'
-import type {
-  PhotoCategoryQueryResult,
-  PhotosByCategoryQueryResult,
-} from '@/sanity.types'
 
-interface PhotoCategory {
-  _id: string
-  title: string
-  slug: string
-  description?: string
-  coverImage: any
-  order?: number
-  isPublished: boolean
-}
-
-interface Photo {
-  _id: string
-  title: string
-  image: any
-  caption?: string
-  location?: string
-  date?: string
-  category?: {
-    title: string
-    slug: string
-  }
-  order?: number
-  isPublished: boolean
-  tags?: string[]
-}
-
-interface Props {
-  params: { slug: string }
+type Props = {
+  params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = params
+  const { slug } = await params
   const { data: category } = await sanityFetch({
     query: photoCategoryQuery,
     params: { slug },
@@ -54,13 +24,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${category.title} - Photography Gallery`,
-    description: category.description || `Photos from ${category.title}`,
+    title: `${(category as any).title} - Photography Gallery`,
+    description: (category as any).description || `Photos from ${(category as any).title}`,
   }
 }
 
 export default async function PhotoCategoryPage({ params }: Props) {
-  const { slug } = params
+  const { slug } = await params
   const [{ data: category }, { data: photos }] = await Promise.all([
     sanityFetch({
       query: photoCategoryQuery,
@@ -90,16 +60,16 @@ export default async function PhotoCategoryPage({ params }: Props) {
             </Link>
           </li>
           <li>/</li>
-          <li className="text-gray-900">{category.title}</li>
+          <li className="text-gray-900">{(category as any).title}</li>
         </ol>
       </nav>
 
       {/* Category Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">{category.title}</h1>
-        {category.description && (
+        <h1 className="text-4xl font-bold mb-4">{(category as any).title}</h1>
+        {(category as any).description && (
           <p className="text-gray-600 text-lg mb-4">
-            {category.description}
+            {(category as any).description}
           </p>
         )}
         <p className="text-gray-500">
