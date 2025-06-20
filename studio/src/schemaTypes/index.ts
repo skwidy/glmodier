@@ -3,6 +3,8 @@ import {page} from './documents/page'
 import {post} from './documents/post'
 import {poem} from './documents/poem'
 import {simplePage} from './documents/simplePage'
+import {photo} from './documents/photo'
+import {photoCategory} from './documents/photoCategory'
 import {callToAction} from './objects/callToAction'
 import {infoSection} from './objects/infoSection'
 import {settings} from './singletons/settings'
@@ -20,6 +22,8 @@ export const schemaTypes = [
   poem,
   simplePage,
   person,
+  photo,
+  photoCategory,
   // Objects
   blockContent,
   infoSection,

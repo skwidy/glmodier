@@ -45,6 +45,11 @@ export default async function Header() {
                   Poésie
                 </Link>
               </li>
+              <li>
+                <Link href="/photos" className="hover:underline">
+                  Photos
+                </Link>
+              </li>
               <li className="sm:before:w-[1px] sm:before:bg-gray-200 before:block flex sm:gap-4 md:gap-6">
                 <Link
                   className="rounded-full flex gap-4 items-center bg-black hover:bg-blue focus:bg-blue py-2 px-4 justify-center sm:py-3 sm:px-6 text-white transition-colors duration-200"

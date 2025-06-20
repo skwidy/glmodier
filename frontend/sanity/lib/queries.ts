@@ -22,6 +22,31 @@ const poemFields = /* groq */ `
   "date": coalesce(date, _updatedAt),
 `;
 
+const photoCategoryFields = /* groq */ `
+  _id,
+  "status": select(_originalId in path("drafts.**") => "draft", "published"),
+  title,
+  "slug": slug.current,
+  description,
+  coverImage,
+  order,
+  isPublished,
+`;
+
+const photoFields = /* groq */ `
+  _id,
+  "status": select(_originalId in path("drafts.**") => "draft", "published"),
+  title,
+  image,
+  caption,
+  location,
+  date,
+  "category": category->{title, "slug": slug.current},
+  order,
+  isPublished,
+  tags,
+`;
+
 const linkReference = /* groq */ `
   _type == "link" => {
     "page": page->slug.current,
@@ -139,5 +164,35 @@ export const simplePageQuery = defineQuery(`
 
 export const simplePageSlugs = defineQuery(`
   *[_type == "simplePage" && defined(slug.current)]
+  {"slug": slug.current}
+`);
+
+// Photo Gallery Queries
+export const allPhotoCategoriesQuery = defineQuery(`
+  *[_type == "photoCategory" && isPublished == true] | order(order asc, title asc) {
+    ${photoCategoryFields}
+  }
+`);
+
+export const photoCategoryQuery = defineQuery(`
+  *[_type == "photoCategory" && slug.current == $slug][0] {
+    ${photoCategoryFields}
+  }
+`);
+
+export const photosByCategoryQuery = defineQuery(`
+  *[_type == "photo" && category->slug.current == $categorySlug && isPublished == true] | order(order asc, date desc) {
+    ${photoFields}
+  }
+`);
+
+export const allPhotosQuery = defineQuery(`
+  *[_type == "photo" && isPublished == true] | order(date desc) {
+    ${photoFields}
+  }
+`);
+
+export const photoCategorySlugs = defineQuery(`
+  *[_type == "photoCategory" && isPublished == true && defined(slug.current)]
   {"slug": slug.current}
 `);

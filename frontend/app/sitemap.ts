@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 import { sanityFetch } from "@/sanity/lib/live";
-import { sitemapData } from "@/sanity/lib/queries";
+import { sitemapData, photoCategorySlugs } from "@/sanity/lib/queries";
 import { headers } from "next/headers";
 
 /**
@@ -9,16 +9,31 @@ import { headers } from "next/headers";
  */
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const allPostsAndPages = await sanityFetch({
-    query: sitemapData,
-  });
+  const [allPostsAndPages, photoCategories] = await Promise.all([
+    sanityFetch({
+      query: sitemapData,
+    }),
+    sanityFetch({
+      query: photoCategorySlugs,
+    }),
+  ]);
+  
   const headersList = await headers();
   const sitemap: MetadataRoute.Sitemap = [];
   const domain: String = headersList.get("host") as string;
+  
   sitemap.push({
     url: domain as string,
     lastModified: new Date(),
     priority: 1,
+    changeFrequency: "monthly",
+  });
+
+  // Add photos main page
+  sitemap.push({
+    url: `${domain}/photos`,
+    lastModified: new Date(),
+    priority: 0.8,
     changeFrequency: "monthly",
   });
 
@@ -53,6 +68,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority,
         changeFrequency,
         url,
+      });
+    }
+  }
+
+  // Add photo category pages
+  if (photoCategories != null && photoCategories.data.length != 0) {
+    for (const category of photoCategories.data as { slug: string }[]) {
+      sitemap.push({
+        url: `${domain}/photos/${category.slug}`,
+        lastModified: new Date(),
+        priority: 0.6,
+        changeFrequency: "monthly",
       });
     }
   }
