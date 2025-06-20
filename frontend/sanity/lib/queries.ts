@@ -182,13 +182,33 @@ export const simplePageSlugs = defineQuery(`
 // Photo Gallery Queries
 export const allPhotoCategoriesQuery = defineQuery(`
   *[_type == "photoCategory" && isPublished == true] | order(order asc, title asc) {
-    ${photoCategoryFields}
+    _id,
+    "status": select(_originalId in path("drafts.**") => "draft", "published"),
+    title,
+    "slug": slug.current,
+    description,
+    coverImage {
+      ...,
+      asset->
+    },
+    order,
+    isPublished
   }
 `);
 
 export const photoCategoryQuery = defineQuery(`
   *[_type == "photoCategory" && slug.current == $slug][0] {
-    ${photoCategoryFields}
+    _id,
+    "status": select(_originalId in path("drafts.**") => "draft", "published"),
+    title,
+    "slug": slug.current,
+    description,
+    coverImage {
+      ...,
+      asset->
+    },
+    order,
+    isPublished
   }
 `);
 

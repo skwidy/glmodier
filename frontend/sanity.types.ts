@@ -1023,10 +1023,10 @@ export type SimplePageSlugsResult = Array<{
   slug: string;
 }>;
 // Variable: allPhotoCategoriesQuery
-// Query: *[_type == "photoCategory" && isPublished == true] | order(order asc, title asc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  title,  "slug": slug.current,  description,  coverImage {    ...,    asset->  },  order,  isPublished,  }
+// Query: *[_type == "photoCategory" && isPublished == true] | order(order asc, title asc) {    _id,    "status": select(_originalId in path("drafts.**") => "draft", "published"),    title,    "slug": slug.current,    description,    coverImage {      ...,      asset->    },    order,    isPublished  }
 export type AllPhotoCategoriesQueryResult = Array<never>;
 // Variable: photoCategoryQuery
-// Query: *[_type == "photoCategory" && slug.current == $slug][0] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  title,  "slug": slug.current,  description,  coverImage {    ...,    asset->  },  order,  isPublished,  }
+// Query: *[_type == "photoCategory" && slug.current == $slug][0] {    _id,    "status": select(_originalId in path("drafts.**") => "draft", "published"),    title,    "slug": slug.current,    description,    coverImage {      ...,      asset->    },    order,    isPublished  }
 export type PhotoCategoryQueryResult = null;
 // Variable: photosByCategoryQuery
 // Query: *[_type == "photo" && category->slug.current == $categorySlug && isPublished == true] | order(order asc, date desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  title,  image {    ...,    asset->  },  caption,  location,  date,  "category": category->{title, "slug": slug.current},  order,  isPublished,  tags,  }
@@ -1055,8 +1055,8 @@ declare module "@sanity/client" {
     "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
     "\n  *[_type == \"simplePage\" && slug.current == $slug][0]{\n    _id,\n    title,\n    content\n  }\n": SimplePageQueryResult;
     "\n  *[_type == \"simplePage\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": SimplePageSlugsResult;
-    "\n  *[_type == \"photoCategory\" && isPublished == true] | order(order asc, title asc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  title,\n  \"slug\": slug.current,\n  description,\n  coverImage {\n    ...,\n    asset->\n  },\n  order,\n  isPublished,\n\n  }\n": AllPhotoCategoriesQueryResult;
-    "\n  *[_type == \"photoCategory\" && slug.current == $slug][0] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  title,\n  \"slug\": slug.current,\n  description,\n  coverImage {\n    ...,\n    asset->\n  },\n  order,\n  isPublished,\n\n  }\n": PhotoCategoryQueryResult;
+    "\n  *[_type == \"photoCategory\" && isPublished == true] | order(order asc, title asc) {\n    _id,\n    \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n    title,\n    \"slug\": slug.current,\n    description,\n    coverImage {\n      ...,\n      asset->\n    },\n    order,\n    isPublished\n  }\n": AllPhotoCategoriesQueryResult;
+    "\n  *[_type == \"photoCategory\" && slug.current == $slug][0] {\n    _id,\n    \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n    title,\n    \"slug\": slug.current,\n    description,\n    coverImage {\n      ...,\n      asset->\n    },\n    order,\n    isPublished\n  }\n": PhotoCategoryQueryResult;
     "\n  *[_type == \"photo\" && category->slug.current == $categorySlug && isPublished == true] | order(order asc, date desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  title,\n  image {\n    ...,\n    asset->\n  },\n  caption,\n  location,\n  date,\n  \"category\": category->{title, \"slug\": slug.current},\n  order,\n  isPublished,\n  tags,\n\n  }\n": PhotosByCategoryQueryResult;
     "\n  *[_type == \"photo\" && isPublished == true] | order(date desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  title,\n  image {\n    ...,\n    asset->\n  },\n  caption,\n  location,\n  date,\n  \"category\": category->{title, \"slug\": slug.current},\n  order,\n  isPublished,\n  tags,\n\n  }\n": AllPhotosQueryResult;
     "\n  *[_type == \"photoCategory\" && isPublished == true && defined(slug.current)]\n  {\"slug\": slug.current}\n": PhotoCategorySlugsResult;

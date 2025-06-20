@@ -35,7 +35,7 @@ export default async function PhotosPage() {
             <div className="relative overflow-hidden rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300">
               <div className="aspect-[4/3] relative">
                   <CoverImage image={category.coverImage} priority={false} />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
+                <div className="absolute inset-0 bg-opacity-0 group-hover:bg-black/20 transition-all duration-300" />
               </div>
 
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">

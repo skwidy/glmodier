@@ -4,6 +4,10 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { urlForImage } from '@/sanity/lib/utils'
 import { SanityImageSource } from '@sanity/image-url/lib/types/types'
+import {
+  getImageDimensions,
+  type SanityImageSource as SanityImageSourceAsset,
+} from '@sanity/asset-utils'
 import CoverImage from './CoverImage'
 
 interface Photo {
@@ -38,20 +42,31 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
 
   return (
     <>
-      <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ${className}`}>
-        {photos.map((photo) => (
+      <div
+        className={`grid grid-cols-1 items-start sm:grid-cols-2 lg:grid-cols-4 gap-4 ${className}`}
+      >
+        {photos.map((photo) => {
+          const dimensions = getImageDimensions(
+            photo.image as SanityImageSourceAsset,
+          )
+          const aspectRatio = dimensions.width / dimensions.height
+          const isWide = aspectRatio > 1.25
+
+          return (
             <div
               key={photo._id}
-              className="group relative cursor-pointer overflow-hidden rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300"
+              className={`group relative cursor-pointer overflow-hidden rounded-lg bg-gray-100 transition-all duration-300 hover:bg-gray-200 ${
+                isWide ? 'sm:col-span-2 lg:col-span-2' : ''
+              }`}
               onClick={() => handlePhotoClick(photo)}
             >
-              <div className="aspect-square relative">
+              <div className="relative">
                 {photo.image ? (
                   <CoverImage image={photo.image} priority={false} />
                 ) : (
                   <div className="w-full h-full bg-gray-200" />
                 )}
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
+                <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
               </div>
               
               {/* Photo info overlay */}
@@ -67,40 +82,45 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
               </div>
             </div>
           )
-        )}
+        })}
       </div>
 
       {/* Modal */}
       {selectedPhoto && (
         <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
           onClick={closeModal}
         >
-          <div className="relative max-w-6xl max-h-[90vh] bg-white rounded-lg overflow-hidden">
+          <div
+            className="relative w-full max-w-6xl max-h-[90vh] bg-white rounded-lg overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={closeModal}
               className="absolute top-4 right-4 z-10 bg-black/50 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-black/70 transition-colors"
             >
               ×
             </button>
-            
+
             <div className="flex flex-col lg:flex-row">
-              <div className="flex-1 relative">
+              <div className="flex-1 relative flex items-center justify-center bg-black">
                 <Image
-                  src={urlForImage(selectedPhoto.image)
-                    ?.width(800)
-                    .height(800)
-                    .fit('max')
-                    .url() || ''}
+                  src={
+                    urlForImage(selectedPhoto.image)
+                      ?.width(1600)
+                      .height(1600)
+                      .fit('max')
+                      .url() || ''
+                  }
                   alt={selectedPhoto.title}
-                  width={800}
-                  height={800}
-                  className="w-full h-auto max-h-[70vh] object-contain"
-                  sizes="(max-width: 1024px) 100vw, 800px"
+                  width={1600}
+                  height={1600}
+                  className="w-full h-auto max-h-[90vh] object-contain"
+                  sizes="(max-width: 1024px) 100vw, 1600px"
                 />
               </div>
-              
-              <div className="w-full lg:w-80 p-6 bg-gray-50">
+
+              <div className="w-full lg:w-96 p-6 bg-gray-50">
                 <h2 className="text-xl font-semibold mb-2">
                   {selectedPhoto.title}
                 </h2>
