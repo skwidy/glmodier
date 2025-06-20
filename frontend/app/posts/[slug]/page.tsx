@@ -75,7 +75,8 @@ export default async function PostPage(props: Props) {
 
   const headings = post.content
     ? (post.content.filter(
-        (block) => /h\d/.test(block.style || ""),
+        (block) =>
+          block._type === "block" && /h\d/.test(block.style || ""),
       ) as Heading[])
     : [];
 

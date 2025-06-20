@@ -2,7 +2,7 @@ import "./globals.css";
 
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import { Inter, EB_Garamond } from "next/font/google";
+import localFont from "next/font/local";
 import { draftMode } from "next/headers";
 import { VisualEditing, toPlainText } from "next-sanity";
 import { Toaster } from "sonner";
@@ -51,16 +51,67 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const inter = Inter({
+const inter = localFont({
+  src: "../public/fonts/InterVariable.ttf",
   variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
+  display: "fallback",
 });
 
-const eb_garamond = EB_Garamond({
+const eb_garamond = localFont({
+  src: [
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-500.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-600.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-700.woff2",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-800.woff2",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-italic.woff2",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-500italic.woff2",
+      weight: "500",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-600italic.woff2",
+      weight: "600",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-700italic.woff2",
+      weight: "700",
+      style: "italic",
+    },
+    {
+      path: "../public/fonts/eb-garamond-v31-latin-800italic.woff2",
+      weight: "800",
+      style: "italic",
+    },
+  ],
   variable: "--font-eb-garamond",
-  subsets: ["latin"],
-  display: "swap",
+  display: "fallback",
 });
 
 export default async function RootLayout({
