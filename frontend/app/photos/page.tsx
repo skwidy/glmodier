@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
-import Image from 'next/image'
-import { client } from '@/sanity/lib/client'
-import { allPhotoCategoriesQuery } from '@/sanity/lib/queries'
-import { urlForImage } from '@/sanity/lib/utils'
 import Link from 'next/link'
+
+import { sanityFetch } from '@/sanity/lib/live'
+import { allPhotoCategoriesQuery } from '@/sanity/lib/queries'
+import { AllPhotoCategoriesQueryResult } from '@/sanity.types'
+import CoverImage from '../components/CoverImage'
 
 export const metadata: Metadata = {
   title: 'Photography Gallery',
@@ -11,7 +12,9 @@ export const metadata: Metadata = {
 }
 
 export default async function PhotosPage() {
-  const categories = await client.fetch(allPhotoCategoriesQuery)
+  const { data: categories } = await sanityFetch({
+    query: allPhotoCategoriesQuery,
+  })
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -23,7 +26,7 @@ export default async function PhotosPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categories.map((category: any) => (
+        {categories?.map((category: any) => (
           <Link
             key={category._id}
             href={`/photos/${category.slug}`}
@@ -31,21 +34,10 @@ export default async function PhotosPage() {
           >
             <div className="relative overflow-hidden rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300">
               <div className="aspect-[4/3] relative">
-                <Image
-                  src={urlForImage(category.coverImage)
-                    ?.width(600)
-                    .height(450)
-                    .fit('crop')
-                    .crop('center')
-                    .url() || ''}
-                  alt={category.title}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
+                  <CoverImage image={category.coverImage} priority={false} />
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
               </div>
-              
+
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
                 <h2 className="text-white text-xl font-semibold mb-2">
                   {category.title}
@@ -61,7 +53,7 @@ export default async function PhotosPage() {
         ))}
       </div>
 
-      {categories.length === 0 && (
+      {(categories?.length ?? 0) === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">
             No photo categories available yet. Check back soon!
@@ -70,4 +62,4 @@ export default async function PhotosPage() {
       )}
     </div>
   )
-} 
+}

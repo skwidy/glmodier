@@ -8,7 +8,10 @@ const postFields = /* groq */ `
   "title": coalesce(title, "Untitled"),
   "slug": slug.current,
   excerpt,
-  coverImage,
+  coverImage {
+    ...,
+    asset->
+  },
   "date": coalesce(date, _updatedAt),
   "author": author->{firstName, lastName, picture},
 `;
@@ -18,7 +21,10 @@ const poemFields = /* groq */ `
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title, "Untitled"),
   "slug": slug.current,
-  coverImage,
+  coverImage {
+    ...,
+    asset->
+  },
   "date": coalesce(date, _updatedAt),
 `;
 
@@ -28,7 +34,10 @@ const photoCategoryFields = /* groq */ `
   title,
   "slug": slug.current,
   description,
-  coverImage,
+  coverImage {
+    ...,
+    asset->
+  },
   order,
   isPublished,
 `;
@@ -37,7 +46,10 @@ const photoFields = /* groq */ `
   _id,
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   title,
-  image,
+  image {
+    ...,
+    asset->
+  },
   caption,
   location,
   date,

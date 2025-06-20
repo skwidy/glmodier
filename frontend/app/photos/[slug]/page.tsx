@@ -1,9 +1,14 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { client } from '@/sanity/lib/client'
-import { photoCategoryQuery, photosByCategoryQuery } from '@/sanity/lib/queries'
-import PhotoGrid from '@/app/components/PhotoGrid'
 import Link from 'next/link'
+
+import PhotoGrid from '@/app/components/PhotoGrid'
+import { sanityFetch } from '@/sanity/lib/live'
+import { photoCategoryQuery, photosByCategoryQuery } from '@/sanity/lib/queries'
+import type {
+  PhotoCategoryQueryResult,
+  PhotosByCategoryQueryResult,
+} from '@/sanity.types'
 
 interface PhotoCategory {
   _id: string
@@ -32,13 +37,16 @@ interface Photo {
 }
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const category = await client.fetch(photoCategoryQuery, { slug }) as PhotoCategory | null
-  
+  const { slug } = params
+  const { data: category } = await sanityFetch({
+    query: photoCategoryQuery,
+    params: { slug },
+  })
+
   if (!category) {
     return {
       title: 'Category Not Found',
@@ -52,10 +60,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PhotoCategoryPage({ params }: Props) {
-  const { slug } = await params
-  const [category, photos] = await Promise.all([
-    client.fetch(photoCategoryQuery, { slug }) as Promise<PhotoCategory | null>,
-    client.fetch(photosByCategoryQuery, { categorySlug: slug }) as Promise<Photo[]>,
+  const { slug } = params
+  const [{ data: category }, { data: photos }] = await Promise.all([
+    sanityFetch({
+      query: photoCategoryQuery,
+      params: { slug },
+    }),
+    sanityFetch({
+      query: photosByCategoryQuery,
+      params: { categorySlug: slug },
+    }),
   ])
 
   if (!category) {
@@ -68,7 +82,10 @@ export default async function PhotoCategoryPage({ params }: Props) {
       <nav className="mb-6">
         <ol className="flex items-center space-x-2 text-sm text-gray-500">
           <li>
-            <Link href="/photos" className="hover:text-gray-700 transition-colors">
+            <Link
+              href="/photos"
+              className="hover:text-gray-700 transition-colors"
+            >
               Gallery
             </Link>
           </li>

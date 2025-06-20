@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { urlForImage } from '@/sanity/lib/utils'
 import { SanityImageSource } from '@sanity/image-url/lib/types/types'
+import CoverImage from './CoverImage'
 
 interface Photo {
   _id: string
@@ -39,40 +40,34 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
     <>
       <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 ${className}`}>
         {photos.map((photo) => (
-          <div
-            key={photo._id}
-            className="group relative cursor-pointer overflow-hidden rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300"
-            onClick={() => handlePhotoClick(photo)}
-          >
-            <div className="aspect-square relative">
-              <Image
-                src={urlForImage(photo.image)
-                  ?.width(400)
-                  .height(400)
-                  .fit('crop')
-                  .crop('center')
-                  .url() || ''}
-                alt={photo.title}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, 20vw"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
+            <div
+              key={photo._id}
+              className="group relative cursor-pointer overflow-hidden rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300"
+              onClick={() => handlePhotoClick(photo)}
+            >
+              <div className="aspect-square relative">
+                {photo.image ? (
+                  <CoverImage image={photo.image} priority={false} />
+                ) : (
+                  <div className="w-full h-full bg-gray-200" />
+                )}
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300" />
+              </div>
+              
+              {/* Photo info overlay */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <h3 className="text-white text-sm font-medium truncate">
+                  {photo.title}
+                </h3>
+                {photo.location && (
+                  <p className="text-white/80 text-xs truncate">
+                    {photo.location}
+                  </p>
+                )}
+              </div>
             </div>
-            
-            {/* Photo info overlay */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <h3 className="text-white text-sm font-medium truncate">
-                {photo.title}
-              </h3>
-              {photo.location && (
-                <p className="text-white/80 text-xs truncate">
-                  {photo.location}
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
 
       {/* Modal */}
@@ -81,7 +76,7 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
           className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
           onClick={closeModal}
         >
-          <div className="relative max-w-4xl max-h-[90vh] bg-white rounded-lg overflow-hidden">
+          <div className="relative max-w-6xl max-h-[90vh] bg-white rounded-lg overflow-hidden">
             <button
               onClick={closeModal}
               className="absolute top-4 right-4 z-10 bg-black/50 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-black/70 transition-colors"

@@ -10,18 +10,18 @@ const imageBuilder = createImageUrlBuilder({
 });
 
 export const urlForImage = (source: any) => {
-  // Ensure that source image contains a valid reference
-  if (!source?.asset?._ref) {
+  // Ensure that source image contains a valid asset
+  if (!source?.asset) {
     return undefined;
   }
 
-  const imageRef = source?.asset?._ref;
   const crop = source.crop;
 
-  // get the image's og dimensions
-  const { width, height } = getImageDimensions(imageRef);
+  if (crop) {
+    // For cropping, we need the original image dimensions.
+    // getImageDimensions can get this from both an asset reference and a full asset document.
+    const { width, height } = getImageDimensions(source);
 
-  if (Boolean(crop)) {
     // compute the cropped image's area
     const croppedWidth = Math.floor(width * (1 - (crop.right + crop.left)));
 

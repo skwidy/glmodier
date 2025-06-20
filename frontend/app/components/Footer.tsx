@@ -8,14 +8,14 @@ export default function Footer() {
             French. Nomad. Entrepreneur.
           </h3>
           <div className="flex flex-col gap-3 items-center justify-center lg:w-1/2 lg:flex-row lg:pl-4">
-            <a
-              href="https://github.com/sanity-io/sanity-template-nextjs-clean"
+            <button
+              data-tally-open="nrrkgN"
+              data-tally-emoji-text="👋"
+              data-tally-emoji-animation="wave"
               className="rounded-full flex gap-2 font-mono whitespace-nowrap items-center bg-black hover:bg-blue focus:bg-blue py-3 px-6 text-white transition-colors duration-200"
-              target="_blank"
-              rel="noopener noreferrer"
             >
               Contact Me
-            </a>
+            </button>
             <div className="flex gap-4">
               <a
                 href="https://linkedin.com/in/guillaumeodier"

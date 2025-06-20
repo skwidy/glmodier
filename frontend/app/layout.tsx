@@ -6,6 +6,8 @@ import localFont from "next/font/local";
 import { draftMode } from "next/headers";
 import { VisualEditing, toPlainText } from "next-sanity";
 import { Toaster } from "sonner";
+import { Inter } from "next/font/google";
+import Script from "next/script";
 
 import DraftModeToast from "@/app/components/DraftModeToast";
 import Footer from "@/app/components/Footer";
@@ -126,6 +128,13 @@ export default async function RootLayout({
       lang="en"
       className={`${inter.variable} ${eb_garamond.variable} bg-white text-black`}
     >
+      <head>
+        <Script
+          async
+          src="https://tally.so/widgets/embed.js"
+          strategy="afterInteractive"
+        />
+      </head>
       <body>
         <section className="min-h-screen pt-24">
           {/* The <Toaster> component is responsible for rendering toast notifications used in /app/client-utils.ts and /app/components/DraftModeToast.tsx */}

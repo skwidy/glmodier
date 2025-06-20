@@ -6,13 +6,14 @@ import { urlForImage } from "@/sanity/lib/utils";
 interface CoverImageProps {
   image: any;
   priority?: boolean;
+  className?: string;
 }
 
 export default function CoverImage(props: CoverImageProps) {
-  const { image: source, priority } = props;
-  const image = source?.asset?._ref ? (
+  const { image: source, priority, className } = props;
+  const image = source?.asset ? (
     <Image
-      className="object-cover"
+      className={`object-cover ${className || ""}`}
       width={getImageDimensions(source).width}
       height={getImageDimensions(source).height}
       alt={stegaClean(source?.alt) || ""}
