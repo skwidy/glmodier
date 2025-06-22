@@ -120,6 +120,12 @@ export default async function PostPage(props: Props) {
           </aside>
         </div>
       </div>
+      
+      {/* Mobile table of contents */}
+      <div className="lg:hidden">
+        <TableOfContents headings={headings} />
+      </div>
+      
       <div className="border-t border-gray-100 bg-gray-50">
         <div className="container py-12 lg:py-24 grid gap-12">
           <aside>

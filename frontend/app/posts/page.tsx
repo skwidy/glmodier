@@ -37,7 +37,7 @@ export default async function PostsPage() {
           {posts?.map((post: AllPostsQueryResult[0]) => (
             <article key={post._id} className="group">
               <Link href={`/posts/${post.slug}`} className="block">
-                <div className="aspect-[16/9] overflow-hidden rounded-lg bg-gray-100">
+                <div className="aspect-[16/9] overflow-hidden flex items-center justify-center rounded-lg bg-gray-100">
                   {post.coverImage && (
                     <div className="transition-transform duration-300 group-hover:scale-105">
                       <CoverImage

@@ -78,9 +78,9 @@ export default function PoemsList({
                   <h2 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                     {poem.title}
                   </h2>
-                  <div className="mt-3 flex items-center text-sm text-gray-500">
+                  {/* <div className="mt-3 flex items-center text-sm text-gray-500">
                     <Date dateString={poem.date} />
-                  </div>
+                  </div> */}
                 </div>
               </Link>
             </article>
