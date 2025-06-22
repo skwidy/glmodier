@@ -14,14 +14,14 @@ interface Photo {
   _id: string
   title: string
   image: SanityImageSource
-  caption?: string
-  location?: string
-  date?: string
+  caption?: string | null
+  location?: string | null
+  date?: string | null
   category?: {
     title: string
     slug: string
   }
-  tags?: string[]
+  tags?: string[] | null
 }
 
 interface PhotoGridProps {

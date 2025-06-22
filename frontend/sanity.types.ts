@@ -13,6 +13,11 @@
  */
 
 // Source: schema.json
+export type HtmlEmbed = {
+  _type: "htmlEmbed";
+  html: string;
+};
+
 export type CallToAction = {
   _type: "callToAction";
   heading: string;
@@ -89,7 +94,9 @@ export type InfoSection = {
     caption?: string;
     _type: "image";
     _key: string;
-  }>;
+  } | {
+    _key: string;
+  } & HtmlEmbed>;
 };
 
 export type BlockContent = Array<{
@@ -137,7 +144,67 @@ export type BlockContent = Array<{
   caption?: string;
   _type: "image";
   _key: string;
-}>;
+} | {
+  _key: string;
+} & HtmlEmbed>;
+
+export type Photo = {
+  _id: string;
+  _type: "photo";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  image: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  caption?: string;
+  location?: string;
+  date?: string;
+  category: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "photoCategory";
+  };
+  order?: number;
+  isPublished?: boolean;
+  tags?: Array<string>;
+};
+
+export type PhotoCategory = {
+  _id: string;
+  _type: "photoCategory";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title: string;
+  slug: Slug;
+  description?: string;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  order?: number;
+  isPublished?: boolean;
+};
 
 export type SimplePage = {
   _id: string;
@@ -148,6 +215,16 @@ export type SimplePage = {
   title: string;
   slug: Slug;
   content?: BlockContent;
+};
+
+export type PoemTag = {
+  _id: string;
+  _type: "poemTag";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name: string;
+  slug: Slug;
 };
 
 export type Poem = {
@@ -172,6 +249,13 @@ export type Poem = {
     alt: string;
     _type: "image";
   };
+  tags?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "poemTag";
+  }>;
 };
 
 export type Settings = {
@@ -540,7 +624,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes = CallToAction | Link | InfoSection | BlockContent | SimplePage | Poem | Settings | Page | Post | Person | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = HtmlEmbed | CallToAction | Link | InfoSection | BlockContent | Photo | PhotoCategory | SimplePage | PoemTag | Poem | Settings | Page | Post | Person | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -648,6 +732,11 @@ export type GetPageQueryResult = {
       level?: number;
       _type: "block";
       _key: string;
+    } | {
+      _key: string;
+      _type: "htmlEmbed";
+      html: string;
+      markDefs: null;
     } | {
       asset?: {
         _ref: string;
@@ -814,6 +903,11 @@ export type PostQueryResult = {
     _type: "block";
     _key: string;
   } | {
+    _key: string;
+    _type: "htmlEmbed";
+    html: string;
+    markDefs: null;
+  } | {
     asset?: {
       _ref: string;
       _type: "reference";
@@ -919,7 +1013,11 @@ export type AllPoemsQueryResult = Array<{
     _type: "image";
   };
   date: string;
-  tags: null;
+  tags: Array<{
+    _id: string;
+    name: string;
+    slug: string;
+  }> | null;
 }>;
 // Variable: poemQuery
 // Query: *[_type == "poem" && slug.current == $slug] [0] {    content[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  coverImage {    ...,    asset->  },  "date": coalesce(date, _updatedAt),  "tags": tags[]->{    _id,    name,    "slug": slug.current  }  }
@@ -945,6 +1043,11 @@ export type PoemQueryResult = {
     level?: number;
     _type: "block";
     _key: string;
+  } | {
+    _key: string;
+    _type: "htmlEmbed";
+    html: string;
+    markDefs: null;
   } | {
     asset?: {
       _ref: string;
@@ -995,7 +1098,11 @@ export type PoemQueryResult = {
     _type: "image";
   };
   date: string;
-  tags: null;
+  tags: Array<{
+    _id: string;
+    name: string;
+    slug: string;
+  }> | null;
 } | null;
 // Variable: postPagesSlugs
 // Query: *[_type == "post" && defined(slug.current)]  {"slug": slug.current}
@@ -1026,22 +1133,185 @@ export type SimplePageSlugsResult = Array<{
 }>;
 // Variable: allPhotoCategoriesQuery
 // Query: *[_type == "photoCategory" && isPublished == true] | order(order asc, title asc) {    _id,    "status": select(_originalId in path("drafts.**") => "draft", "published"),    title,    "slug": slug.current,    description,    coverImage {      ...,      asset->    },    order,    isPublished  }
-export type AllPhotoCategoriesQueryResult = Array<never>;
+export type AllPhotoCategoriesQueryResult = Array<{
+  _id: string;
+  status: "draft" | "published";
+  title: string;
+  slug: string;
+  description: string | null;
+  coverImage: {
+    asset: {
+      _id: string;
+      _type: "sanity.imageAsset";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      originalFilename?: string;
+      label?: string;
+      title?: string;
+      description?: string;
+      altText?: string;
+      sha1hash?: string;
+      extension?: string;
+      mimeType?: string;
+      size?: number;
+      assetId?: string;
+      uploadId?: string;
+      path?: string;
+      url?: string;
+      metadata?: SanityImageMetadata;
+      source?: SanityAssetSourceData;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  order: number | null;
+  isPublished: boolean | null;
+}>;
 // Variable: photoCategoryQuery
 // Query: *[_type == "photoCategory" && slug.current == $slug][0] {    _id,    "status": select(_originalId in path("drafts.**") => "draft", "published"),    title,    "slug": slug.current,    description,    coverImage {      ...,      asset->    },    order,    isPublished  }
-export type PhotoCategoryQueryResult = null;
+export type PhotoCategoryQueryResult = {
+  _id: string;
+  status: "draft" | "published";
+  title: string;
+  slug: string;
+  description: string | null;
+  coverImage: {
+    asset: {
+      _id: string;
+      _type: "sanity.imageAsset";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      originalFilename?: string;
+      label?: string;
+      title?: string;
+      description?: string;
+      altText?: string;
+      sha1hash?: string;
+      extension?: string;
+      mimeType?: string;
+      size?: number;
+      assetId?: string;
+      uploadId?: string;
+      path?: string;
+      url?: string;
+      metadata?: SanityImageMetadata;
+      source?: SanityAssetSourceData;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  order: number | null;
+  isPublished: boolean | null;
+} | null;
 // Variable: photosByCategoryQuery
 // Query: *[_type == "photo" && category->slug.current == $categorySlug && isPublished == true] | order(order asc, date desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  title,  image {    ...,    asset->  },  caption,  location,  date,  "category": category->{title, "slug": slug.current},  order,  isPublished,  tags,  }
-export type PhotosByCategoryQueryResult = Array<never>;
+export type PhotosByCategoryQueryResult = Array<{
+  _id: string;
+  status: "draft" | "published";
+  title: string;
+  image: {
+    asset: {
+      _id: string;
+      _type: "sanity.imageAsset";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      originalFilename?: string;
+      label?: string;
+      title?: string;
+      description?: string;
+      altText?: string;
+      sha1hash?: string;
+      extension?: string;
+      mimeType?: string;
+      size?: number;
+      assetId?: string;
+      uploadId?: string;
+      path?: string;
+      url?: string;
+      metadata?: SanityImageMetadata;
+      source?: SanityAssetSourceData;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  caption: string | null;
+  location: string | null;
+  date: string | null;
+  category: {
+    title: string;
+    slug: string;
+  };
+  order: number | null;
+  isPublished: boolean | null;
+  tags: Array<string> | null;
+}>;
 // Variable: allPhotosQuery
 // Query: *[_type == "photo" && isPublished == true] | order(date desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  title,  image {    ...,    asset->  },  caption,  location,  date,  "category": category->{title, "slug": slug.current},  order,  isPublished,  tags,  }
-export type AllPhotosQueryResult = Array<never>;
+export type AllPhotosQueryResult = Array<{
+  _id: string;
+  status: "draft" | "published";
+  title: string;
+  image: {
+    asset: {
+      _id: string;
+      _type: "sanity.imageAsset";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      originalFilename?: string;
+      label?: string;
+      title?: string;
+      description?: string;
+      altText?: string;
+      sha1hash?: string;
+      extension?: string;
+      mimeType?: string;
+      size?: number;
+      assetId?: string;
+      uploadId?: string;
+      path?: string;
+      url?: string;
+      metadata?: SanityImageMetadata;
+      source?: SanityAssetSourceData;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  caption: string | null;
+  location: string | null;
+  date: string | null;
+  category: {
+    title: string;
+    slug: string;
+  };
+  order: number | null;
+  isPublished: boolean | null;
+  tags: Array<string> | null;
+}>;
 // Variable: photoCategorySlugs
 // Query: *[_type == "photoCategory" && isPublished == true && defined(slug.current)]  {"slug": slug.current}
-export type PhotoCategorySlugsResult = Array<never>;
+export type PhotoCategorySlugsResult = Array<{
+  slug: string;
+}>;
 // Variable: allPoemTagsQuery
 // Query: *[_type == "poemTag" && defined(slug.current)]{    _id,    name,    "slug": slug.current,    "poemCount": count(*[_type == "poem" && references(^._id)])  } | order(poemCount desc)
-export type AllPoemTagsQueryResult = Array<never>;
+export type AllPoemTagsQueryResult = Array<{
+  _id: string;
+  name: string;
+  slug: string;
+  poemCount: number;
+}>;
 
 // Query TypeMap
 import "@sanity/client";
