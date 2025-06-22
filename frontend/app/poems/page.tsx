@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from 'react'
 
 import { sanityFetch } from "@/sanity/lib/live";
 import { allPoemsQuery, allPoemTagsQuery } from "@/sanity/lib/queries";
@@ -20,5 +21,9 @@ export default async function PoemsPage() {
     return <div>Loading...</div>;
   }
 
-  return <PoemsList poems={poems} tags={tags} />;
+  return (
+    <Suspense fallback={<div>Loading poems...</div>}>
+      <PoemsList poems={poems} tags={tags} />
+    </Suspense>
+  )
 } 

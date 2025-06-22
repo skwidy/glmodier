@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { urlForImage } from '@/sanity/lib/utils'
 import { SanityImageSource } from '@sanity/image-url/lib/types/types'
@@ -40,19 +40,19 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
     setSelectedPhoto(null)
   }
 
-  const goToNextPhoto = () => {
+  const goToNextPhoto = useCallback(() => {
     if (!selectedPhoto) return
     const currentIndex = photos.findIndex((p) => p._id === selectedPhoto._id)
     const nextIndex = (currentIndex + 1) % photos.length
     setSelectedPhoto(photos[nextIndex])
-  }
+  }, [photos, selectedPhoto])
 
-  const goToPreviousPhoto = () => {
+  const goToPreviousPhoto = useCallback(() => {
     if (!selectedPhoto) return
     const currentIndex = photos.findIndex((p) => p._id === selectedPhoto._id)
     const prevIndex = (currentIndex - 1 + photos.length) % photos.length
     setSelectedPhoto(photos[prevIndex])
-  }
+  }, [photos, selectedPhoto])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -72,7 +72,7 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [selectedPhoto, photos])
+  }, [selectedPhoto, photos, goToNextPhoto, goToPreviousPhoto])
 
   return (
     <>

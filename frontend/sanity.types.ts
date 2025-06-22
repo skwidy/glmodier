@@ -883,7 +883,7 @@ export type PostQueryResult = {
   } | null;
 } | null;
 // Variable: allPoemsQuery
-// Query: *[_type == "poem" && defined(slug.current)] | order(_createdAt desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  coverImage {    ...,    asset->  },  "date": coalesce(date, _updatedAt),  }
+// Query: *[_type == "poem" && defined(slug.current)] | order(_createdAt desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  coverImage {    ...,    asset->  },  "date": coalesce(date, _updatedAt),  "tags": tags[]->{    _id,    name,    "slug": slug.current  }  }
 export type AllPoemsQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
@@ -919,9 +919,10 @@ export type AllPoemsQueryResult = Array<{
     _type: "image";
   };
   date: string;
+  tags: null;
 }>;
 // Variable: poemQuery
-// Query: *[_type == "poem" && slug.current == $slug] [0] {    content[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  coverImage {    ...,    asset->  },  "date": coalesce(date, _updatedAt),  }
+// Query: *[_type == "poem" && slug.current == $slug] [0] {    content[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  coverImage {    ...,    asset->  },  "date": coalesce(date, _updatedAt),  "tags": tags[]->{    _id,    name,    "slug": slug.current  }  }
 export type PoemQueryResult = {
   content: Array<{
     children?: Array<{
@@ -994,6 +995,7 @@ export type PoemQueryResult = {
     _type: "image";
   };
   date: string;
+  tags: null;
 } | null;
 // Variable: postPagesSlugs
 // Query: *[_type == "post" && defined(slug.current)]  {"slug": slug.current}
@@ -1037,6 +1039,9 @@ export type AllPhotosQueryResult = Array<never>;
 // Variable: photoCategorySlugs
 // Query: *[_type == "photoCategory" && isPublished == true && defined(slug.current)]  {"slug": slug.current}
 export type PhotoCategorySlugsResult = Array<never>;
+// Variable: allPoemTagsQuery
+// Query: *[_type == "poemTag" && defined(slug.current)]{    _id,    name,    "slug": slug.current,    "poemCount": count(*[_type == "poem" && references(^._id)])  } | order(poemCount desc)
+export type AllPoemTagsQueryResult = Array<never>;
 
 // Query TypeMap
 import "@sanity/client";
@@ -1048,8 +1053,8 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date asc, _updatedAt asc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage {\n    ...,\n    asset->\n  },\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": AllPostsQueryResult;
     "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date asc, _updatedAt asc) [0...$limit] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage {\n    ...,\n    asset->\n  },\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": MorePostsQueryResult;
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  excerpt,\n  coverImage {\n    ...,\n    asset->\n  },\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": PostQueryResult;
-    "\n  *[_type == \"poem\" && defined(slug.current)] | order(_createdAt desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  coverImage {\n    ...,\n    asset->\n  },\n  \"date\": coalesce(date, _updatedAt),\n\n  }\n": AllPoemsQueryResult;
-    "\n  *[_type == \"poem\" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  coverImage {\n    ...,\n    asset->\n  },\n  \"date\": coalesce(date, _updatedAt),\n\n  }\n": PoemQueryResult;
+    "\n  *[_type == \"poem\" && defined(slug.current)] | order(_createdAt desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  coverImage {\n    ...,\n    asset->\n  },\n  \"date\": coalesce(date, _updatedAt),\n  \"tags\": tags[]->{\n    _id,\n    name,\n    \"slug\": slug.current\n  }\n\n  }\n": AllPoemsQueryResult;
+    "\n  *[_type == \"poem\" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title, \"Untitled\"),\n  \"slug\": slug.current,\n  coverImage {\n    ...,\n    asset->\n  },\n  \"date\": coalesce(date, _updatedAt),\n  \"tags\": tags[]->{\n    _id,\n    name,\n    \"slug\": slug.current\n  }\n\n  }\n": PoemQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PostPagesSlugsResult;
     "\n  *[_type == \"poem\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PoemPagesSlugsResult;
     "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
@@ -1060,5 +1065,6 @@ declare module "@sanity/client" {
     "\n  *[_type == \"photo\" && category->slug.current == $categorySlug && isPublished == true] | order(order asc, date desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  title,\n  image {\n    ...,\n    asset->\n  },\n  caption,\n  location,\n  date,\n  \"category\": category->{title, \"slug\": slug.current},\n  order,\n  isPublished,\n  tags,\n\n  }\n": PhotosByCategoryQueryResult;
     "\n  *[_type == \"photo\" && isPublished == true] | order(date desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  title,\n  image {\n    ...,\n    asset->\n  },\n  caption,\n  location,\n  date,\n  \"category\": category->{title, \"slug\": slug.current},\n  order,\n  isPublished,\n  tags,\n\n  }\n": AllPhotosQueryResult;
     "\n  *[_type == \"photoCategory\" && isPublished == true && defined(slug.current)]\n  {\"slug\": slug.current}\n": PhotoCategorySlugsResult;
+    "\n  *[_type == \"poemTag\" && defined(slug.current)]{\n    _id,\n    name,\n    \"slug\": slug.current,\n    \"poemCount\": count(*[_type == \"poem\" && references(^._id)])\n  } | order(poemCount desc)\n": AllPoemTagsQueryResult;
   }
 }
