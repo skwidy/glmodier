@@ -26,6 +26,11 @@ const poemFields = /* groq */ `
     asset->
   },
   "date": coalesce(date, _updatedAt),
+  "tags": tags[]->{
+    _id,
+    name,
+    "slug": slug.current
+  }
 `;
 
 const photoCategoryFields = /* groq */ `
@@ -108,13 +113,13 @@ export const sitemapData = defineQuery(`
 `);
 
 export const allPostsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
+  *[_type == "post" && defined(slug.current)] | order(date asc, _updatedAt asc) {
     ${postFields}
   }
 `);
 
 export const morePostsQuery = defineQuery(`
-  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
+  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date asc, _updatedAt asc) [0...$limit] {
     ${postFields}
   }
 `);
@@ -227,4 +232,13 @@ export const allPhotosQuery = defineQuery(`
 export const photoCategorySlugs = defineQuery(`
   *[_type == "photoCategory" && isPublished == true && defined(slug.current)]
   {"slug": slug.current}
+`);
+
+export const allPoemTagsQuery = defineQuery(`
+  *[_type == "poemTag" && defined(slug.current)]{
+    _id,
+    name,
+    "slug": slug.current,
+    "poemCount": count(*[_type == "poem" && references(^._id)])
+  } | order(poemCount desc)
 `);

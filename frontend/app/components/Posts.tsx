@@ -144,7 +144,7 @@ export const MorePosts = async ({
   }
 
   return (
-    <Posts heading={`Recent Chapters`}>
+    <Posts heading={`Other Chapters`}>
       {data?.map((post: any) => <Post key={post._id} post={post} />)}
     </Posts>
   );

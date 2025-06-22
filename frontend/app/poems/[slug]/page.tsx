@@ -1,10 +1,12 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 import { type PortableTextBlock } from "next-sanity";
-import CoverImage from "@/app/components/CoverImage";
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 import PortableText from "@/app/components/PortableText";
 import { sanityFetch } from "@/sanity/lib/live";
 import { poemPagesSlugs, poemQuery } from "@/sanity/lib/queries";
+import CoverImage from "@/app/components/CoverImage";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -47,18 +49,44 @@ export default async function PoemPage(props: Props) {
   }
 
   return (
-    <div className="container my-12 lg:my-24">
-      <div className="font-serif text-center text-lg md:text-xl lg:text-2xl leading-loose">
-        {poem.content?.length && (
-          <PortableText
-            className="max-w-2xl mx-auto"
-            value={poem.content as PortableTextBlock[]}
-          />
-        )}
-      </div>
-      <div className="mt-12 text-center">
-        <h1 className="text-4xl font-bold">{poem.title}</h1>
-        <p className="mt-4 text-gray-500">@GLMODIER</p>
+    <div className="container px-4 sm:px-6 lg:px-8 my-12 lg:my-24">
+      <div className="max-w-6xl mx-auto">
+        <Link
+          href="/poems"
+          className="flex items-center gap-2 text-sm text-gray-500 hover:text-black transition-colors mb-8"
+        >
+          <ChevronLeft size={16} />
+          <span>Back to Poems</span>
+        </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
+          <div className="col-span-1">
+            <div className="mb-12">
+              <h1 className="text-4xl md:text-5xl font-bold font-serif">
+                {poem.title}
+              </h1>
+            </div>
+
+            <div className="font-serif text-lg md:text-xl lg:text-2xl leading-normal text-left max-w-2xl">
+              {poem.content?.length && (
+                <div className="prose prose-lg prose-p:my-2">
+                  <PortableText
+                    value={poem.content as PortableTextBlock[]}
+                  />
+                </div>
+              )}
+            </div>
+            <div className="mt-12 text-gray-500">
+              <p>@Guillaume Odier</p>
+            </div>
+          </div>
+          <div className="col-span-1">
+            {poem.coverImage && (
+              <div className="aspect-[3/4] relative rounded-lg overflow-hidden">
+                <CoverImage image={poem.coverImage} priority />
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

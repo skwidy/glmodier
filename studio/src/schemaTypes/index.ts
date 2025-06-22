@@ -2,6 +2,7 @@ import {person} from './documents/person'
 import {page} from './documents/page'
 import {post} from './documents/post'
 import {poem} from './documents/poem'
+import {poemTag} from './documents/poemTag'
 import {simplePage} from './documents/simplePage'
 import {photo} from './documents/photo'
 import {photoCategory} from './documents/photoCategory'
@@ -21,6 +22,7 @@ export const schemaTypes = [
   page,
   post,
   poem,
+  poemTag,
   simplePage,
   person,
   photo,

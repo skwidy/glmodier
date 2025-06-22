@@ -40,3 +40,13 @@
 
   --default-transition-duration: 250ms;
 }
+
+/* .prose p:first-of-type::first-letter {
+  float: left;
+  font-size: 4.2rem;
+  line-height: 0.7;
+  font-weight: 700;
+  margin-right: 0.125em;
+  margin-bottom: 0.125em;
+}
+.prose p:first-of-type::first-letter { float: left; font-size: 4.2rem; line-height: 0.7; font-weight: 700; margin-right: 0.125em; margin-bottom: 0.125em; } */

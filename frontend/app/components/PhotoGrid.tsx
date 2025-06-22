@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { urlForImage } from '@/sanity/lib/utils'
 import { SanityImageSource } from '@sanity/image-url/lib/types/types'
@@ -39,6 +39,40 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
   const closeModal = () => {
     setSelectedPhoto(null)
   }
+
+  const goToNextPhoto = () => {
+    if (!selectedPhoto) return
+    const currentIndex = photos.findIndex((p) => p._id === selectedPhoto._id)
+    const nextIndex = (currentIndex + 1) % photos.length
+    setSelectedPhoto(photos[nextIndex])
+  }
+
+  const goToPreviousPhoto = () => {
+    if (!selectedPhoto) return
+    const currentIndex = photos.findIndex((p) => p._id === selectedPhoto._id)
+    const prevIndex = (currentIndex - 1 + photos.length) % photos.length
+    setSelectedPhoto(photos[prevIndex])
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        closeModal()
+      } else if (event.key === 'ArrowRight') {
+        goToNextPhoto()
+      } else if (event.key === 'ArrowLeft') {
+        goToPreviousPhoto()
+      }
+    }
+
+    if (selectedPhoto) {
+      document.addEventListener('keydown', handleKeyDown)
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [selectedPhoto, photos])
 
   return (
     <>
@@ -88,77 +122,90 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
       {/* Modal */}
       {selectedPhoto && (
         <div
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
           onClick={closeModal}
         >
           <div
-            className="relative w-full max-w-6xl max-h-[90vh] bg-white rounded-lg overflow-hidden"
+            className="w-full max-w-7xl max-h-[95vh] flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Previous Photo Button */}
             <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 z-10 bg-black/50 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-black/70 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation()
+                goToPreviousPhoto()
+              }}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-30 m-2 md:m-4 bg-black/50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/70 transition-colors"
+              aria-label="Previous photo"
             >
-              ×
+              &larr;
             </button>
 
-            <div className="flex flex-col lg:flex-row">
-              <div className="flex-1 relative flex items-center justify-center bg-black">
-                <Image
-                  src={
-                    urlForImage(selectedPhoto.image)
-                      ?.width(1600)
-                      .height(1600)
-                      .fit('max')
-                      .url() || ''
-                  }
-                  alt={selectedPhoto.title}
-                  width={1600}
-                  height={1600}
-                  className="w-full h-auto max-h-[90vh] object-contain"
-                  sizes="(max-width: 1024px) 100vw, 1600px"
-                />
-              </div>
+            {/* Next Photo Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                goToNextPhoto()
+              }}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-30 m-2 md:m-4 bg-black/50 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/70 transition-colors"
+              aria-label="Next photo"
+            >
+              &rarr;
+            </button>
 
-              <div className="w-full lg:w-96 p-6 bg-gray-50">
-                <h2 className="text-xl font-semibold mb-2">
+            <div className="relative rounded-lg overflow-hidden">
+              <button
+                onClick={closeModal}
+                className="absolute top-0 right-0 z-20 m-4 bg-black/50 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-black/70 transition-colors"
+              >
+                ×
+              </button>
+
+              <Image
+                src={
+                  urlForImage(selectedPhoto.image)
+                    ?.width(2400)
+                    .height(1600)
+                    .fit('max')
+                    .url() || ''
+                }
+                alt={selectedPhoto.title}
+                width={2400}
+                height={1600}
+                className="w-auto h-auto max-w-full max-h-[95vh] object-contain"
+                sizes="(max-width: 1024px) 100vw, 1800px"
+              />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white z-10 pointer-events-none">
+                <h2 className="text-2xl font-semibold mb-2">
                   {selectedPhoto.title}
                 </h2>
-                
-                {selectedPhoto.caption && (
-                  <p className="text-gray-600 mb-4">
-                    {selectedPhoto.caption}
-                  </p>
-                )}
-                
-                <div className="space-y-2 text-sm text-gray-500">
+                <div className="text-sm space-y-1 text-gray-200">
                   {selectedPhoto.location && (
-                    <div>
-                      <span className="font-medium">Location:</span> {selectedPhoto.location}
-                    </div>
+                    <p>
+                      <span className="font-medium">Location:</span>{' '}
+                      {selectedPhoto.location}
+                    </p>
                   )}
-                  
-                  {selectedPhoto.date && (
-                    <div>
-                      <span className="font-medium">Date:</span> {new Date(selectedPhoto.date).toLocaleDateString()}
-                    </div>
-                  )}
-                  
                   {selectedPhoto.category && (
-                    <div>
-                      <span className="font-medium">Category:</span> {selectedPhoto.category.title}
-                    </div>
+                    <p>
+                      <span className="font-medium">Category:</span>{' '}
+                      {selectedPhoto.category.title}
+                    </p>
+                  )}
+                  {selectedPhoto.date && (
+                    <p>
+                      <span className="font-medium">Date:</span>{' '}
+                      {new Date(selectedPhoto.date).toLocaleDateString()}
+                    </p>
                   )}
                 </div>
-                
                 {selectedPhoto.tags && selectedPhoto.tags.length > 0 && (
                   <div className="mt-4">
-                    <span className="text-sm font-medium text-gray-500">Tags:</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
+                    <div className="flex flex-wrap gap-2">
                       {selectedPhoto.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-1 bg-gray-200 text-gray-700 text-xs rounded-full"
+                          className="px-2 py-1 bg-white/20 text-white text-xs rounded-full"
                         >
                           {tag}
                         </span>

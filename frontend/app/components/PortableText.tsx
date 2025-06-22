@@ -178,7 +178,10 @@ export default function PortableText({
 }) {
   return (
     <div
-      className={["prose prose-a:text-brand", className]
+      className={[
+        "prose prose-a:text-brand font-serif text-justify",
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
     >

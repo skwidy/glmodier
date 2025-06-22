@@ -100,7 +100,7 @@ export default async function PostPage(props: Props) {
               </div>
             </div>
             <article className="gap-6 grid max-w-4xl">
-              <div className="">
+              <div className="max-h-[460px] rounded-lg overflow-hidden">
                 {post?.coverImage && (
                   <CoverImage image={post.coverImage} priority />
                 )}

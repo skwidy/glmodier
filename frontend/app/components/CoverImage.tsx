@@ -13,7 +13,7 @@ export default function CoverImage(props: CoverImageProps) {
   const { image: source, priority, className } = props;
   const image = source?.asset ? (
     <Image
-      className={`w-full h-auto object-cover ${className || ""}`}
+      className={`w-full h-full object-cover ${className || ""}`}
       width={getImageDimensions(source).width}
       height={getImageDimensions(source).height}
       alt={stegaClean(source?.alt) || ""}

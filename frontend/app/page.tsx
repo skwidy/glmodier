@@ -20,7 +20,32 @@ export default async function Page() {
     <>
       <div className="border-t border-gray-100 bg-gray-50">
         <div className="container">
-          <aside className="py-12 sm:py-20">
+          <aside className="py-12 sm:py-12">
+            <div className="pb-12 sm:pb-20">
+              <p className="text-lg font-medium text-gray-900 font-mono">
+                🇫🇷 French. ✈️ Nomad.  💻 Entrepreneur.
+              </p>
+              <p className="mt-2 text-lg text-gray-600">
+                Co-Founder @
+                <a
+                  href="https://captaindata.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline transition-colors hover:text-blue-500"
+                >
+                  captaindata.com
+                </a>{" "}
+                and @
+                <a
+                  href="https://linbox.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline transition-colors hover:text-blue-500"
+                >
+                  linbox.app
+                </a>
+              </p>
+            </div>
             <Suspense>{await AllPosts()}</Suspense>
           </aside>
         </div>
@@ -50,25 +75,30 @@ export default async function Page() {
               </div>
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-8">
                 {(photoCategories as any[]).map((category) => (
-                  <article key={category._id} className="group">
-                    <Link href={`/photos/${category.slug}`} className="block">
-                      <div className="aspect-[16/9] overflow-hidden rounded-lg bg-gray-100">
+                  <Link
+                    key={category._id}
+                    href={`/photos/${category.slug}`}
+                    className="group block"
+                  >
+                    <div className="relative overflow-hidden bg-gray-100 transition-all duration-300 group-hover:bg-gray-200 rounded-lg">
+                      <div className="aspect-[4/3] relative">
                         {category.coverImage && (
-                          <div className="transition-transform duration-300 group-hover:scale-105">
-                            <CoverImage
-                              image={category.coverImage}
-                              priority={false}
-                            />
-                          </div>
+                          <CoverImage
+                            image={category.coverImage}
+                            priority={false}
+                            className="rounded-lg"
+                          />
                         )}
+                        <div className="absolute inset-0 bg-opacity-0 transition-all duration-300 group-hover:bg-black/20" />
                       </div>
-                      <div className="mt-4">
-                        <h2 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                        <h2 className="text-xl font-semibold text-white">
                           {category.title}
                         </h2>
                       </div>
-                    </Link>
-                  </article>
+                    </div>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -88,25 +118,29 @@ export default async function Page() {
               </div>
               <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-8">
                 {poems?.slice(0, 3).map((poem: AllPoemsQueryResult[0]) => (
-                  <article key={poem._id} className="group">
-                    <Link href={`/poems/${poem.slug}`} className="block">
-                      <div className="aspect-[16/9] overflow-hidden rounded-lg bg-gray-100">
+                  <Link
+                    key={poem._id}
+                    href={`/poems/${poem.slug}`}
+                    className="group block"
+                  >
+                    <div className="relative overflow-hidden bg-gray-100 transition-all duration-300 group-hover:bg-gray-200 rounded-lg">
+                      <div className="aspect-[4/3] relative">
                         {poem.coverImage && (
-                          <div className="transition-transform duration-300 group-hover:scale-105">
-                            <CoverImage
-                              image={poem.coverImage}
-                              priority={false}
-                            />
-                          </div>
+                          <CoverImage
+                            image={poem.coverImage}
+                            priority={false}
+                            className="rounded-lg"
+                          />
                         )}
+                        <div className="absolute inset-0 bg-opacity-0 transition-all duration-300 group-hover:bg-black/20" />
                       </div>
-                      <div className="mt-4">
-                        <h2 className="text-xl font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                        <h2 className="text-xl font-semibold text-white">
                           {poem.title}
                         </h2>
                       </div>
-                    </Link>
-                  </article>
+                    </div>
+                  </Link>
                 ))}
               </div>
             </div>

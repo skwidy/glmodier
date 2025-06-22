@@ -44,23 +44,39 @@ export default function TableOfContents({ headings }: Props) {
   }, [headings]);
 
   return (
-    <div className="p-4 bg-gray-50 rounded-lg">
-      <h2 className="text-lg font-semibold mb-4">Table of Contents</h2>
-      <ul>
+    <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <h2 className="text-sm font-semibold mb-4 uppercase tracking-wider">
+        Table of Contents
+      </h2>
+      <ul className="space-y-2">
         {headings.map((heading) => (
           <li
             key={heading._key}
             className={`
-              ${heading.style === "h1" ? "font-bold" : ""}
-              ${heading.style === "h2" ? "ml-4" : ""}
-              ${heading.style === "h3" ? "ml-8" : ""}
+              border-l-2
+              pl-4
+              transition-colors
+              ${
+                activeId === heading._key
+                  ? 'border-blue-500'
+                  : 'border-transparent hover:border-gray-300'
+              }
+              ${heading.style === "h1" ? "font-semibold" : ""}
+              ${heading.style === "h2" ? "ml-2" : ""}
+              ${heading.style === "h3" ? "ml-4" : ""}
             `}
           >
             <a
               href={`#${heading._key}`}
-              className={`hover:underline ${
-                activeId === heading._key ? "text-blue-600 font-semibold" : ""
-              }`}
+              className={`
+                text-sm 
+                transition-colors
+                ${
+                  activeId === heading._key
+                    ? 'font-semibold text-blue-600'
+                    : 'text-gray-600 hover:text-gray-900'
+                }
+              `}
             >
               {heading.children && (heading.children as any)[0].text}
             </a>

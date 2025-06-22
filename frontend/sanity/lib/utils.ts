@@ -35,10 +35,11 @@ export const urlForImage = (source: any) => {
     return imageBuilder
       ?.image(source)
       .rect(left, top, croppedWidth, croppedHeight)
-      .auto("format");
+      .auto("format")
+      .quality(90);
   }
 
-  return imageBuilder?.image(source).auto("format");
+  return imageBuilder?.image(source).auto("format").quality(90);
 };
 
 export function resolveOpenGraphImage(image: any, width = 1200, height = 627) {
