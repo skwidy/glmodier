@@ -11,7 +11,11 @@ interface CoverImageProps {
 
 export default function CoverImage(props: CoverImageProps) {
   const { image: source, priority, className } = props;
-  const image = source?.asset ? (
+  
+  // Check if source and asset exist before processing
+  const hasValidImage = source && typeof source === 'object' && 'asset' in source && source.asset
+  
+  const image = hasValidImage ? (
     <Image
       className={`w-full h-full object-cover ${className || ""}`}
       width={getImageDimensions(source).width}

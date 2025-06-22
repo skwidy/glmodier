@@ -80,9 +80,11 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
         className={`grid grid-cols-1 items-start sm:grid-cols-2 lg:grid-cols-4 gap-4 ${className}`}
       >
         {photos.map((photo) => {
-          const dimensions = getImageDimensions(
-            photo.image as SanityImageSourceAsset,
-          )
+          // Check if image and asset exist before getting dimensions
+          const hasValidImage = photo.image && typeof photo.image === 'object' && 'asset' in photo.image && photo.image.asset
+          const dimensions = hasValidImage 
+            ? getImageDimensions(photo.image as SanityImageSourceAsset)
+            : { width: 1, height: 1 }
           const aspectRatio = dimensions.width / dimensions.height
           const isWide = aspectRatio > 1.25
 
@@ -95,7 +97,7 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
               onClick={() => handlePhotoClick(photo)}
             >
               <div className="relative">
-                {photo.image ? (
+                {hasValidImage ? (
                   <CoverImage image={photo.image} priority={false} />
                 ) : (
                   <div className="w-full h-full bg-gray-200" />
@@ -161,20 +163,26 @@ export default function PhotoGrid({ photos, className = '' }: PhotoGridProps) {
                 ×
               </button>
 
-              <Image
-                src={
-                  urlForImage(selectedPhoto.image)
-                    ?.width(2400)
-                    .height(1600)
-                    .fit('max')
-                    .url() || ''
-                }
-                alt={selectedPhoto.title}
-                width={2400}
-                height={1600}
-                className="w-auto h-auto max-w-full max-h-[95vh] object-contain"
-                sizes="(max-width: 1024px) 100vw, 1800px"
-              />
+              {selectedPhoto.image && typeof selectedPhoto.image === 'object' && 'asset' in selectedPhoto.image && selectedPhoto.image.asset ? (
+                <Image
+                  src={
+                    urlForImage(selectedPhoto.image)
+                      ?.width(2400)
+                      .height(1600)
+                      .fit('max')
+                      .url() || ''
+                  }
+                  alt={selectedPhoto.title}
+                  width={2400}
+                  height={1600}
+                  className="w-auto h-auto max-w-full max-h-[95vh] object-contain"
+                  sizes="(max-width: 1024px) 100vw, 1800px"
+                />
+              ) : (
+                <div className="w-full h-96 bg-gray-200 flex items-center justify-center">
+                  <p className="text-gray-500">Image not available</p>
+                </div>
+              )}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white z-10 pointer-events-none">
                 <h2 className="text-2xl font-semibold mb-2">
                   {selectedPhoto.title}
