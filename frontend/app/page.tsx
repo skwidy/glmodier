@@ -23,7 +23,7 @@ export default async function Page() {
           <aside className="py-12 sm:py-12">
             <div className="pb-12 sm:pb-20">
               <p className="text-lg font-medium text-gray-900 font-mono">
-                🇫🇷 French. ✈️ Nomad.  💻 Entrepreneur.
+                Hey, I&apos;m G.
               </p>
               <p className="mt-2 text-lg text-gray-600">
                 Co-Founder @
