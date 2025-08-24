@@ -113,13 +113,13 @@ export const sitemapData = defineQuery(`
 `);
 
 export const allPostsQuery = defineQuery(`
-  *[_type == "post" && defined(slug.current)] | order(date asc, _updatedAt asc) {
+  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {
     ${postFields}
   }
 `);
 
 export const morePostsQuery = defineQuery(`
-  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date asc, _updatedAt asc) [0...$limit] {
+  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {
     ${postFields}
   }
 `);

@@ -87,19 +87,32 @@ const Post = ({
 };
 
 const SmallPost = ({ post }: { post: AllPostsQueryResult[number] }) => {
-  const { _id, title, slug, date } = post;
+  const { _id, title, slug, date, coverImage } = post;
   return (
     <article key={_id} className="relative group">
       <Link href={`/posts/${slug}`}>
         <span className="absolute inset-0 z-10" />
-        <h3 className="text-lg font-semibold transition-colors group-hover:text-blue-600">
-          {title}
-        </h3>
-        {date && (
-          <time className="text-gray-500 text-xs font-mono" dateTime={date}>
-            <DateComponent dateString={date} />
-          </time>
-        )}
+        <div className="flex gap-4 items-start">
+          {coverImage && (
+            <div className="flex-shrink-0 w-48 h-24 overflow-hidden rounded-md">
+              <CoverImage
+                image={coverImage}
+                priority={false}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            </div>
+          )}
+          <div className="flex-grow min-w-0">
+            <h3 className="text-lg font-semibold transition-colors group-hover:text-blue-600 line-clamp-2">
+              {title}
+            </h3>
+            {date && (
+              <time className="text-gray-500 text-xs font-mono" dateTime={date}>
+                <DateComponent dateString={date} />
+              </time>
+            )}
+          </div>
+        </div>
       </Link>
     </article>
   );
@@ -178,7 +191,7 @@ export const AllPosts = async () => {
         {otherPosts.length > 0 && (
           <div className="lg:col-span-1">
             <div className="p-6 bg-gray-50 rounded-sm h-full flex flex-col">
-              <h3 className="text-xl font-bold mb-4">Plus d&apos;articles</h3>
+              <h3 className="text-xl font-bold mb-4">More posts</h3>
               <div className="space-y-6 flex-grow">
                 {otherPosts.slice(0, 5).map((post: any) => (
                   <SmallPost key={post._id} post={post} />
@@ -189,7 +202,7 @@ export const AllPosts = async () => {
                   href="/posts"
                   className="text-sm font-semibold text-blue-600 hover:text-blue-500"
                 >
-                  Lire la suite
+                  All posts
                 </Link>
               </div>
             </div>
