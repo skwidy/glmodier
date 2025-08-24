@@ -28,7 +28,7 @@ const Post = ({
     <article
       data-sanity={attr()}
       key={_id}
-      className="border border-gray-200 rounded-sm p-6 bg-gray-50 transition-colors hover:bg-white relative group flex flex-col"
+      className="p-6 transition-colors hover:bg-gray-50/50 relative group flex flex-col rounded-lg border border-gray-100/50 hover:border-gray-200/50"
     >
       <Link
         className="hover:text-brand underline transition-colors"
@@ -70,7 +70,7 @@ const Post = ({
               {excerpt}
             </p>
           </div>
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100">
+          <div className="flex items-center justify-between mt-6 pt-4 border-t border-gray-100/50">
             {author && author.firstName && author.lastName && (
               <div className="flex items-center">
                 <Avatar person={author} small={true} />
@@ -136,7 +136,7 @@ const Posts = ({
     {subHeading && (
       <p className="mt-2 text-lg leading-8 text-gray-600">{subHeading}</p>
     )}
-    <div className="pt-6">{children}</div>
+            <div className="pt-8">{children}</div>
   </div>
 );
 
@@ -190,7 +190,7 @@ export const AllPosts = async () => {
 
         {otherPosts.length > 0 && (
           <div className="lg:col-span-1">
-            <div className="p-6 bg-gray-50 rounded-sm h-full flex flex-col">
+            <div className="p-6 h-full flex flex-col border border-gray-100/50 rounded-lg">
               <h3 className="text-xl font-bold mb-4">More posts</h3>
               <div className="space-y-6 flex-grow">
                 {otherPosts.slice(0, 5).map((post: any) => (

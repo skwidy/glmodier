@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { AllPosts } from "@/app/components/Posts";
 import CoverImage from "@/app/components/CoverImage";
+import HeroFigure from "@/app/components/HeroFigure";
 import { client } from "@/sanity/lib/client";
 import { allPoemsQuery, allPhotoCategoriesQuery } from "@/sanity/lib/queries";
 import {
@@ -18,33 +19,43 @@ export default async function Page() {
 
   return (
     <>
-      <div className="border-t border-gray-100 bg-gray-50">
+      <div className="border-t border-gray-100">
         <div className="container">
           <aside className="py-12 sm:py-12">
-            <div className="pb-12 sm:pb-20">
-              <p className="text-lg font-medium text-gray-900 font-mono">
-                Hey, I&apos;m G.
-              </p>
-              <p className="mt-2 text-lg text-gray-600">
-                Co-Founder @
-                <a
-                  href="https://captaindata.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline transition-colors hover:text-blue-500"
-                >
-                  captaindata.com
-                </a>{" "}
-                and @
-                <a
-                  href="https://linbox.app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline transition-colors hover:text-blue-500"
-                >
-                  linbox.app
-                </a>
-              </p>
+            <div className="pb-8 sm:pb-12">
+              <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+                {/* Hero figure on the left */}
+                <div className="flex-shrink-0 order-2 lg:order-1">
+                  <HeroFigure className="w-24 h-32" />
+                </div>
+                
+                {/* Text content on the right */}
+                <div className="flex-1 order-1 lg:order-2">
+                  <p className="text-lg font-medium text-gray-900 font-mono">
+                    Hey, I&apos;m G.
+                  </p>
+                  <p className="mt-2 text-lg text-gray-600">
+                    Co-Founder @
+                    <a
+                      href="https://captaindata.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline transition-colors hover:text-blue-500"
+                    >
+                      captaindata.com
+                    </a>{" "}
+                    and @
+                    <a
+                      href="https://linbox.app"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline transition-colors hover:text-blue-500"
+                    >
+                      linbox.app
+                    </a>
+                  </p>
+                </div>
+              </div>
             </div>
             <Suspense>{await AllPosts()}</Suspense>
           </aside>
