@@ -46,12 +46,12 @@ export default async function Page() {
                     </a>{" "}
                     and @
                     <a
-                      href="https://linbox.app"
+                      href="https://threadin.app"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="underline transition-colors hover:text-blue-500"
                     >
-                      linbox.app
+                      threadin.app
                     </a>
                   </p>
                 </div>
