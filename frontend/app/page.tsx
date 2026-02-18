@@ -11,6 +11,9 @@ import {
   AllPhotoCategoriesQueryResult,
 } from "@/sanity.types";
 
+// Revalidate so new posts appear on the homepage (e.g. after publishing in Sanity)
+export const revalidate = 60;
+
 export default async function Page() {
   const [poems, photoCategories] = await Promise.all([
     client.fetch<AllPoemsQueryResult>(allPoemsQuery),

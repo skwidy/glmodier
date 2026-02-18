@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   description: "Nomadic Notebook: a series of fragments, thoughts, and observations collected along the way.",
 };
 
+// Revalidate so new posts appear in the list (e.g. after publishing in Sanity)
+export const revalidate = 60;
+
 export default async function PostsPage() {
   const { data: posts } = await sanityFetch({
     query: allPostsQuery,
